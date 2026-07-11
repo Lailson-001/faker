@@ -20,16 +20,17 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-# ---------------------------------------------------------------------------
-# Config
-# ---------------------------------------------------------------------------
+
 
 @dataclass
 class Config:
     base_url: str = "https://fakestoreapi.com"
     output_dir: Path = field(default_factory=lambda: Path("data"))
     raw_dir_name: str = "raw"
-    processed_dir_name: str = "processed"
+    bronze_dir_name: str = "bronze"
+    silver_dir_name: str = "silver"
+    gold_dir_name: str = "gold"
+    duckdb_file_name: str = "warehouse.duckdb"
     requests_timeout: int = 10
     rate_limit_delay: float = 0.5
     user_agent: str = "python-fakestore-ETL/2.0"
@@ -47,9 +48,7 @@ class Config:
         self.processed_dir.mkdir(parents=True, exist_ok=True)
 
 
-# ---------------------------------------------------------------------------
-# Persistência — só sabe salvar, não sabe de onde os dados vieram
-# ---------------------------------------------------------------------------
+
 
 class RawDataStorage:
 
@@ -105,9 +104,8 @@ class RawDataStorage:
             )
 
 
-# ---------------------------------------------------------------------------
-# Extração — só sabe conversar com a API, não sabe nada sobre arquivos
-# ---------------------------------------------------------------------------
+
+
 
 class FakeStoreAPI:
 
@@ -145,9 +143,7 @@ class FakeStoreAPI:
         return self._get("carts")
 
 
-# ---------------------------------------------------------------------------
-# Orquestração — combina API + Storage, não faz o trabalho sujo ela mesma
-# ---------------------------------------------------------------------------
+
 
 class FakeStoreETL:
 
@@ -195,9 +191,6 @@ class FakeStoreETL:
         return results
 
 
-# ---------------------------------------------------------------------------
-# Uso
-# ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
     config = Config(output_dir=Path("data"))
