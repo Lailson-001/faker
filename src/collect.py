@@ -20,8 +20,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-
-
 @dataclass
 class Config:
     base_url: str = "https://fakestoreapi.com"
@@ -36,17 +34,26 @@ class Config:
     user_agent: str = "python-fakestore-ETL/2.0"
 
     @property
-    def raw_dir(self) -> Path:
+    def raw_dir(self):
         return self.output_dir / self.raw_dir_name
 
     @property
-    def processed_dir(self) -> Path:
-        return self.output_dir / self.processed_dir_name
+    def bronze_dir(self):
+        return self.output_dir / self.bronze_dir_name
 
-    def ensure_dirs(self) -> None:
+    @property
+    def silver_dir(self):
+        return self.output_dir / self.silver_dir_name
+
+    @property
+    def gold_dir(self):
+        return self.output_dir / self.gold_dir_name
+
+    def ensure_dirs(self):
         self.raw_dir.mkdir(parents=True, exist_ok=True)
-        self.processed_dir.mkdir(parents=True, exist_ok=True)
-
+        self.bronze_dir.mkdir(parents=True, exist_ok=True)
+        self.silver_dir.mkdir(parents=True, exist_ok=True)
+        self.gold_dir.mkdir(parents=True, exist_ok=True)
 
 
 
